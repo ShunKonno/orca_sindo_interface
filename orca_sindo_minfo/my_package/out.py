@@ -1,5 +1,5 @@
-def energy(dir="", name):
-    with open(f"{dir}{name}.out","r",encoding="UTF-8") as f:
+def energy(name, dir):
+    with open(f"{dir}/{name}.out","r",encoding="UTF-8") as f:
         data = f.readlines()
     
     energy_index = next(i for i, line in enumerate(data) if "Total Energy       :" in line)
@@ -7,8 +7,8 @@ def energy(dir="", name):
     
     return energy
 
-def charge(dir="", name):
-    with open(f"{dir}{name}.out","r",encoding="UTF-8") as f:
+def charge(name, dir):
+    with open(f"{dir}/{name}.out","r",encoding="UTF-8") as f:
         data = f.readlines()
     
     charge_index = next(i for i, line in enumerate(data) if "Total Charge" in line)
@@ -16,17 +16,17 @@ def charge(dir="", name):
 
     return charge
 
-def multiplicity(dir="", name):
-    with open(f"{dir}{name}.out","r",encoding="UTF-8") as f:
+def multiplicity(name, dir):
+    with open(f"{dir}/{name}.out","r",encoding="UTF-8") as f:
         data = f.readlines()
 
     mult_index = next(i for i, line in enumerate(data) if "Multiplicity" in line)
     multiplicity = float(data[mult_index].split("....")[1].split("\n")[0])
 
-    return muliplicity
+    return multiplicity
 
-def atomic_number(dir="", name, xyz_data, atom_num):
-    with open(f"{dir}{name}.out","r",encoding="UTF-8") as f:
+def atomic_number(name, xyz_data, atom_num, dir):
+    with open(f"{dir}/{name}.out","r",encoding="UTF-8") as f:
         data = f.readlines()
 
     nuc_index = next(i for i, line in enumerate(data) if "CARTESIAN COORDINATES (A.U.)" in line)
@@ -47,8 +47,8 @@ def atomic_number(dir="", name, xyz_data, atom_num):
 
     return xyz_data_full
 
-def dipole_moment(dir="", name):
-    with open(f"{dir}{name}.out","r",encoding="UTF-8") as f:
+def dipole_moment(name, dir):
+    with open(f"{dir}/{name}.out","r",encoding="UTF-8") as f:
         data = f.readlines()
         
     di_mo_index = next(i for i, line in enumerate(data) if "Total Dipole Moment" in line)
@@ -57,8 +57,8 @@ def dipole_moment(dir="", name):
 
     return dipole_moment_line
 
-def polarizability(dir="", name):
-    with open(f"{dir}{name}.out","r",encoding="UTF-8") as f:
+def polarizability(name, dir):
+    with open(f"{dir}/{name}.out","r",encoding="UTF-8") as f:
         data = f.readlines()
 
     pol_index = next(i for i, line in enumerate(data) if "The raw cartesian tensor (atomic units):" in line)

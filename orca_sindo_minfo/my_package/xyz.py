@@ -1,6 +1,6 @@
 import numpy as np
-def xyz(dir="",name):
-    with open(f"{dir}{name}.xyz", "r", encoding="UTF-8") as f:
+def xyz(name, dir):
+    with open(f"{dir}/{name}.xyz", "r", encoding="UTF-8") as f:
         data = f.readlines()
     atom_num = int(data[0])
 

@@ -1,7 +1,7 @@
 import numpy as np
 from .xyz import line_check
-def atom_weight(dir="", name, xyz_data, atom_num):
-    with open(f"{dir}{name}.hess", "r", encoding="UTF-8") as f:
+def atom_weight(name, xyz_data, atom_num, dir):
+    with open(f"{dir}/{name}.hess", "r", encoding="UTF-8") as f:
         data = f.readlines()
 
     atom_weight_index = data.index("$atoms\n")+2
@@ -16,8 +16,8 @@ def atom_weight(dir="", name, xyz_data, atom_num):
     
     return xyz_data
 
-def dipole(dir="", name, atom_num):
-    with open(f"{dir}{name}.hess", "r", encoding="UTF-8") as f:
+def dipole(name, atom_num, dir):
+    with open(f"{dir}/{name}.hess", "r", encoding="UTF-8") as f:
         data = f.readlines()
     dipole_index = data.index("$dipole_derivatives\n")+2
 
@@ -32,8 +32,8 @@ def dipole(dir="", name, atom_num):
     dipole = "\n".join(", ".join(dipole_data[i:i+5]) for i in range(0, len(dipole_data), 5))
     return dipole
 
-def hessian(dir="", name, atom_num):
-    with open(f"{dir}{name}.hess", "r", encoding="UTF-8") as f:
+def hessian(name, atom_num, dir):
+    with open(f"{dir}/{name}.hess", "r", encoding="UTF-8") as f:
         data = f.readlines()
     hessian_start = data.index("$hessian\n") + 3
     N = 3 * atom_num
@@ -67,11 +67,11 @@ def hessian(dir="", name, atom_num):
     for i in range(len(matrix)):
         for j in range(i + 1):
             custom_order.append(str(matrix[j][i]))
-    
-    return custom_order
+    hessian_data = "\n".join(", ".join(custom_order[i:i+5]) for i in range(0, len(custom_order), 5)) 
+    return hessian_data
 
-def vibration(dir="", name, xyz_data, atom_num):
-    with open(f"{dir}{name}.hess", "r", encoding="UTF-8") as f:
+def vibration(name, xyz_data, atom_num, dir):
+    with open(f"{dir}/{name}.hess", "r", encoding="UTF-8") as f:
         data = f.readlines()
     
     rot_num = 2 if line_check(xyz_data) else 3
@@ -86,39 +86,40 @@ def vibration(dir="", name, xyz_data, atom_num):
     start_index = None
     for i, line in enumerate(data):
         if line.strip().startswith('$normal_modes'):
-            start_index = i
+            start_idx = i
             break
-    mat_size = atom_num * 3
-    mode_line_index = None
-    for i in range(start_index + 1, len(data)):
-        parts = data[i].split()
-        if len(parts) == 2:
-            r1, r2 = map(int, parts)
-            if (r1 == mat_size) and (r2 == mat_size):
-                mode_line_index = i
-                break
-                
-    big_array = np.zeros((mat_size, mat_size))
-    block1_header_index = mode_line_index + 1
-    block1_data_start = block1_header_index + 1
-    block2_header_index = block1_data_start + mat_size
-    block2_data_start = block2_header_index + 1
+    dims_line = data[start_idx + 1].strip()
+    dims_tokens = dims_line.split()
+    
+    nrows, ncols = int(dims_tokens[0]), int(dims_tokens[1])
+    matrix = np.zeros((nrows, ncols))
 
-    for row in range(mat_size):
-        line = data[block1_data_start + row]
-        parts = line.split()
-        vals = [float(x.replace('E','e')) for x in parts[1 : 1 + 5]]
-        for col in range(5):
-            big_array[row, col] = vals[col]
+    current_col = 0
+    line_idx = start_idx + 2
+    while line_idx < len(data) and current_col < ncols:
+        header_line = data[line_idx].strip()
+        if header_line == "":
+            line_idx += 1
+            continue
+        header_tokens = header_line.split()
+        num_block_cols = len(header_tokens)
 
-    for row in range(mat_size):
-        line = data[block2_data_start + row]
-        parts = line.split()
-        vals = [float(x.replace('E','e')) for x in parts[1 : 1 + 4]]
-        for col in range(4):
-            big_array[row, 5 + col] = vals[col]
+        for i in range(nrows):
+            data_line = data[line_idx + 1 + i].strip()
+            if data_line == "":
+                continue
+            tokens = data_line.split()
+            for j in range(num_block_cols):
+                matrix[i, current_col + j] = float(tokens[j+1])
+        current_col += num_block_cols
+        line_idx += (1 + nrows)
+        
+        if line_check(xyz_data):
+            num_vib = 3 * atom_num - 5
+        else:
+            num_vib = 3 * atom_num - 6
 
-    vib_mode = big_array[:, 3 + rot_num:]
-    vib_modes = [vib_mode[:, i].tolist() for i in range(vib_mode.shape[1])]
+        vib_modes = matrix[:, -num_vib:]
+        vectors = [np.array(vib_modes)[:, i] for i in range(np.array(vib_modes).shape[1])]
 
-    return vib_freqs, vib_modes
+    return vib_freqs, vectors

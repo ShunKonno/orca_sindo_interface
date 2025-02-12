@@ -1,5 +1,5 @@
-def engrad(dir="", name, atom_num):
-    with open(f"{dir}{name}.engrad","r",encoding="UTF-8") as f:
+def engrad(name, atom_num, dir):
+    with open(f"{dir}/{name}.engrad","r",encoding="UTF-8") as f:
         data = f.readlines()
     
     grad_index = next(i for i, line in enumerate(data) if "The current gradient" in line)
