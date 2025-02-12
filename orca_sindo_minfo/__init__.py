@@ -4,7 +4,8 @@ ORCA to SINDO Interface
 Provides functions to convert ORCA output files into SINDO input format.
 """
 
-from .converter import convert
-from .utils import read_orca_output, write_sindo_input
+from .xyz import xyz, line_check
+from .hess import atom_weight, dipole, hessian
+from .out import energy
 
 __all__ = ["xyz","engrad","hess","out"]
