@@ -1,4 +1,5 @@
 import numpy as np
+from .xyz import line_check
 def atom_weight(dir="", name, xyz_data, atom_num):
     with open(f"{dir}{name}.hess", "r", encoding="UTF-8") as f:
         data = f.readlines()
@@ -68,3 +69,56 @@ def hessian(dir="", name, atom_num):
             custom_order.append(str(matrix[j][i]))
     
     return custom_order
+
+def vibration(dir="", name, xyz_data, atom_num):
+    with open(f"{dir}{name}.hess", "r", encoding="UTF-8") as f:
+        data = f.readlines()
+    
+    rot_num = 2 if line_check(xyz_data) else 3
+    
+    vib_freq_index = data.index("$vibrational_frequencies\n") + 2
+
+    vib_freq_lines = data[vib_freq_index : vib_freq_index + atom_num * 3]
+
+    vib_freq_all = [line.strip().split()[1] for line in vib_freq_lines]
+    vib_freqs = vib_freq_all[3 + rot_num:]
+
+    start_index = None
+    for i, line in enumerate(data):
+        if line.strip().startswith('$normal_modes'):
+            start_index = i
+            break
+    mat_size = atom_num * 3
+    mode_line_index = None
+    for i in range(start_index + 1, len(data)):
+        parts = data[i].split()
+        if len(parts) == 2:
+            r1, r2 = map(int, parts)
+            if (r1 == mat_size) and (r2 == mat_size):
+                mode_line_index = i
+                break
+                
+    big_array = np.zeros((mat_size, mat_size))
+    block1_header_index = mode_line_index + 1
+    block1_data_start = block1_header_index + 1
+    block2_header_index = block1_data_start + mat_size
+    block2_data_start = block2_header_index + 1
+
+    for row in range(mat_size):
+        line = data[block1_data_start + row]
+        parts = line.split()
+        vals = [float(x.replace('E','e')) for x in parts[1 : 1 + 5]]
+        for col in range(5):
+            big_array[row, col] = vals[col]
+
+    for row in range(mat_size):
+        line = data[block2_data_start + row]
+        parts = line.split()
+        vals = [float(x.replace('E','e')) for x in parts[1 : 1 + 4]]
+        for col in range(4):
+            big_array[row, 5 + col] = vals[col]
+
+    vib_mode = big_array[:, 3 + rot_num:]
+    vib_modes = [vib_mode[:, i].tolist() for i in range(vib_mode.shape[1])]
+
+    return vib_freqs, vib_modes
