@@ -22,7 +22,7 @@ def create_xml(minfo_files):
         ET.indent(tree, space="   ")
         tree.write(f"../output/{minfo}_output.xml", encoding="UTF-8", xml_declaration=True)
 
-def create_run_script(minfo_files, output_file="../output/run.sh"):
+def create_run_script(minfo_files, output_file="../output/run_qff.sh"):
     script_content = """#!/bin/bash
 
 . /home/shun/SINDO/sindo/sindovars.sh
