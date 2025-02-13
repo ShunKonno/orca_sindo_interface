@@ -82,7 +82,7 @@ def vibration(name, xyz_data, atom_num, dir):
 
     vib_freq_all = [line.strip().split()[1] for line in vib_freq_lines]
     vib_freqs = vib_freq_all[3 + rot_num:]
-
+    vib_freqs = "\n".join(", ".join(vib_freqs[i:i+5]) for i in range(0, len(vib_freqs), 5))
     start_index = None
     for i, line in enumerate(data):
         if line.strip().startswith('$normal_modes'):

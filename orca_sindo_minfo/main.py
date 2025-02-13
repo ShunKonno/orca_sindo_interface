@@ -30,7 +30,7 @@ def extract_info(name, dir=""):
 def main(name, dir):
     (atom_num, xyz_data_full, dipole, hessian, energy, charge, multiplicity, 
      dipole_moment, polarizability, gradient, vib_freqs, vib_modes) = extract_info(name, dir)
-    with open(f"{dir}/{name}.minfo", "w", encoding="UTF-8") as f:
+    with open(f"../output/{name}.minfo", "w", encoding="UTF-8") as f:
         f.write("[ Atomic Data ]\n")
         f.write(str(atom_num) + "\n")
         for line in xyz_data_full:
@@ -68,7 +68,7 @@ def main(name, dir):
         f.write("\nVibrational Frequency\n")
         f.write(f"{len(vib_modes)}")
         f.write("\n")
-        f.write(", ".join(val for val in vib_freqs))
+        f.write(vib_freqs)
         f.write("\nVibrational vector\n")
         for i, val in enumerate(vib_modes):
             f.write(f"Mode {i+1}\n")
