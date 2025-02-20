@@ -4,4 +4,3 @@
 export POTDIR=./
 
 sindo < vscf.inp   > vscf.out   2>&1
-

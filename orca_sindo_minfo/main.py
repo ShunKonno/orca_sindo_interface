@@ -22,14 +22,16 @@ def extract_info(name, dir=""):
     
     gradient = engrad(name, atom_num, dir)
     
-    vib_freqs, vib_modes = vibration(name, xyz_data, atom_num, dir)
+    trans_freqs,trans_vectors,rota_freqs,rota_vectors,vib_freqs,vib_vectors = vibration(name, xyz_data, atom_num, dir)
 
     return (atom_num, xyz_data_full, dipole_val, hessian_val, energy_val, charge_val, multiplicity_val, 
-            dipole_moment_val, polarizability_val, gradient, vib_freqs, vib_modes)
+            dipole_moment_val, polarizability_val, gradient, vib_freqs, vib_vectors, trans_freqs, trans_vectors,
+            rota_freqs, rota_vectors)
 
 def main(name, dir):
     (atom_num, xyz_data_full, dipole, hessian, energy, charge, multiplicity, 
-     dipole_moment, polarizability, gradient, vib_freqs, vib_modes) = extract_info(name, dir)
+     dipole_moment, polarizability, gradient, vib_freqs, vib_vectors, trans_freqs, trans_vectors,
+     rota_freqs, rota_vectors) = extract_info(name, dir)
     with open(f"../output/{name}.minfo", "w", encoding="UTF-8") as f:
         f.write("[ Atomic Data ]\n")
         f.write(str(atom_num) + "\n")
@@ -65,13 +67,35 @@ def main(name, dir):
         f.write("\n")
         f.write("\n[ Vibrational Data ]")
         f.write("\nNormal modes")
-        f.write("\nVibrational Frequency\n")
-        f.write(f"{len(vib_modes)}")
+        f.write("\nTranslational Frequency\n")
+        f.write(f"{len(trans_vectors)}\n")
+        f.write(trans_freqs)
+        f.write("\nTranslational vector\n")
+        for i, val in enumerate(trans_vectors):
+            f.write(f"T {i}\n")
+            f.write(str(atom_num*3))
+            f.write("\n")
+            v = "\n".join(", ".join(str(x) for x in val[i:i+5]) for i in range(0, len(val), 5))
+            f.write(v)
+            f.write("\n")
+        f.write("Rotational Frequency\n")
+        f.write(f"{len(rota_vectors)}\n")
+        f.write(rota_freqs)
+        f.write("\nRotational vector\n")
+        for i, val in enumerate(rota_vectors):
+            f.write(f"R {i}\n")
+            f.write(str(atom_num*3))
+            f.write("\n")
+            v = "\n".join(", ".join(str(x) for x in val[i:i+5]) for i in range(0, len(val), 5))
+            f.write(v)
+            f.write("\n")
+        f.write("Vibrational Frequency\n")
+        f.write(f"{len(vib_vectors)}")
         f.write("\n")
         f.write(vib_freqs)
         f.write("\nVibrational vector\n")
-        for i, val in enumerate(vib_modes):
-            f.write(f"Mode {i+1}\n")
+        for i, val in enumerate(vib_vectors):
+            f.write(f"Mode {i}\n")
             f.write(str(atom_num*3))
             f.write("\n")
             v = "\n".join(", ".join(str(x) for x in val[i:i+5]) for i in range(0, len(val), 5))
