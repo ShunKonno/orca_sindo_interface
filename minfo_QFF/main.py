@@ -1,12 +1,14 @@
 import glob
 import os
 import xml.etree.ElementTree as ET
-def create_xml(minfo_files):
+
+
+def create_xml(minfo_files, nvib):
     root = ET.Element("makePES")
     for minfo in minfo_files:
         minfo_elem = ET.SubElement(root, "minfoFile", value=f"{minfo}.minfo")
 
-        ET.SubElement(root, "MR", value="3")
+        ET.SubElement(root, "MR", value=f"{nvib}")
 
         qchem = ET.SubElement(root, "qchem")
         ET.SubElement(qchem, "program", value="generic")
@@ -36,17 +38,18 @@ def create_run_script(minfo_files, output_file="../output/run_qff.sh"):
     
 
 
-def main():
+def main(nvib):
     def get_minfo_files(directory):
         return [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(f"{directory}/*.minfo")]
     
     directory_path = "../output"
     minfo_files = get_minfo_files(directory_path)
 
-    create_xml(minfo_files)
+    create_xml(minfo_files, nvib)
     create_run_script(minfo_files)
 
 
 if __name__  == "__main__":
-    main()
+    nvib = int(input("MR number(Mode coupling order of the PES)"))
+    main(nvib)
     print("Complete!")
