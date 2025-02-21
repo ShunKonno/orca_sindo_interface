@@ -54,20 +54,20 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
   - 座標 (X, Y, Z)
 
 ### [ Electronic Data ]
-- **Energy (エネルギー)**
-- **Charge (電荷)**
-- **Multiplicity (多重度)**
-- **Gradient (勾配)**
-- **Hessian (ヘシアン行列)**
-- **Dipole Moment (双極子モーメント)**
-- **Polarizability (分極率)**
-- **Dipole Derivative (双極子微分係数)**
+- **Energy**(エネルギー)
+- **Charge**(電荷)
+- **Multiplicity** (多重度)
+- **Gradient**(勾配)
+- **Hessian**(ヘシアン行列)
+- **Dipole Moment**(双極子モーメント)
+- **Polarizability**(分極率)
+- **Dipole Derivative**(双極子微分係数)
 
 ### [ Vibrational Data ]
 - Normal modes の情報:
-  - **Translational Frequency (並進モードの振動数)**
-  - **Rotational Frequency (回転モードの振動数)**
-  - **Vibrational Frequency (振動モードの振動数)**
+  - **Translational Frequency**(並進モード)
+  - **Rotational Frequency**(回転モード)
+  - **Vibrational Frequency**(振動モード)
 
 #### 振動モードの分類ロジック
 
