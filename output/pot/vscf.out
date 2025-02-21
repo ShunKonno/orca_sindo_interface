@@ -1,46 +1,19 @@
-At line 25 of file readMinfo.f90 (unit = 10, file = 'h2o.minfo')
-Fortran runtime error: End of file
 
-Error termination. Backtrace:
-#0  0x7bf6fd023960 in ???
-#1  0x7bf6fd0244d9 in ???
-#2  0x7bf6fd02510f in ???
-#3  0x7bf6fd27817b in ???
-#4  0x7bf6fd278752 in ???
-#5  0x7bf6fd274f1b in ???
-#6  0x7bf6fd279e3c in ???
-#7  0x7bf6fd27ae55 in ???
-#8  0x59b587f3ce0a in ???
-#9  0x59b587f3bfd3 in ???
-#10  0x59b587f3a844 in ???
-#11  0x7bf6fcc29d8f in __libc_start_call_main
+Program received signal SIGSEGV: Segmentation fault - invalid memory reference.
+
+Backtrace for this error:
+#0  0x7a7a52423960 in ???
+#1  0x7a7a52422ac5 in ???
+#2  0x7a7a5204251f in ???
+	at ./signal/../sysdeps/unix/sysv/linux/x86_64/libc_sigaction.c:0
+#3  0x5d16e4d99536 in ???
+#4  0x5d16e4d99dff in ???
+#5  0x5d16e4e425c1 in ???
+#6  0x5d16e4e42646 in ???
+#7  0x5d16e4d7685b in ???
+#8  0x7a7a52029d8f in __libc_start_call_main
 	at ../sysdeps/nptl/libc_start_call_main.h:58
-#12  0x7bf6fcc29e3f in __libc_start_main_impl
+#9  0x7a7a52029e3f in __libc_start_main_impl
 	at ../csu/libc-start.c:392
-#13  0x59b587f3a8a4 in ???
-#14  0xffffffffffffffff in ???
- -------------------------------------------------------
-                                                      
-    ***   WELCOME TO SINDO PROGRAM                    
-     ***                (  VERSION 4.0 0602  )        
-      ***                                             
-       ***       COPYRIGHT 2022:                      
-        ***         KIYOSHI YAGI  KIYOSHI.YAGI@RIKEN.JP
-                                                      
- -------------------------------------------------------
-
-     JOB STARTED AT: Fri Feb 21 00:58:37 2025
-     RUNNING ON shun-ubuntu-th                  
-
-
-(  SETUP MEM MODULE  )
-
-   o MAXIMUM MEMORY :       10 MB
-
-
-(  SETUP MOL MODULE  )
-
-
-   READ DATA FROM A MINFO FILE : [ h2o.minfo ]
-
-
+#10  0x5d16e4d768a4 in ???
+#11  0xffffffffffffffff in ???
