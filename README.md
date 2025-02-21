@@ -64,7 +64,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 - **Dipole Derivative**(双極子微分係数)
 
 ### [ Vibrational Data ]
-Normal modes (ORCAで実行する際に必ず、```PROJECTTR false``` のオプションをつける)
+Normal modes (ORCAで最適化する際に必ず、```PROJECTTR false``` のオプションをつける)
   - **Translational Frequency**(並進モード)
   - **Rotational Frequency**(回転モード)
   - **Vibrational Frequency**(振動モード)
