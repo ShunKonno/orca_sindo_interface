@@ -283,7 +283,37 @@ def fix_tasks_array(tasks_list, G, N, masses, eq_geometry, normal_modes, offset,
                     task["q_vals"][mode_index] = arr[idx_prev]["q_vals"][mode_index]
     fixed_list = arr.flatten().tolist()
     return fixed_list
+def reorder_and_fill_points(tasks, G, N, grid_title, eq_geometry):
+    """
+    tasks: 各グリッドブロック（辞書）のリスト（grid_index キーあり）
+    G: 各軸のグリッド数
+    N: 次元数（qの数）
+    grid_title: 例 "q3q2q1" など
+    eq_geometry: 補完用の平衡座標
 
+    flat な grid_index（整数）をキーにして、全 G^N 個のスロットに対応付けます。
+    取得されなかった箇所は dummy として平衡座標、0差分で埋めます。
+    """
+    # tasks から grid_index をキーに辞書を作成
+    indexed_tasks = {t["grid_index"]: t for t in tasks if t["grid_index"] is not None}
+    # すべての multi-index（タプル）を生成し、1D 用の flat index を計算
+    all_indices = generate_multi_indices(G, N)
+    ordered_tasks = []
+    for mi in all_indices:
+        flat_index = sum(mi[i] * (G**(N-i-1)) for i in range(N))
+        if flat_index in indexed_tasks:
+            ordered_tasks.append(indexed_tasks[flat_index])
+        else:
+            ordered_tasks.append({
+                "grid_title": grid_title,
+                "num": G,
+                "grid_index": flat_index,
+                "grid_flat": eq_geometry,
+                "calc_id": "dummy",
+                "energy_diff": 0.0,
+                "dipole_diff": (0.0, 0.0, 0.0)
+            })
+    return ordered_tasks
 # --- Wrapper for parallel ORCA jobs ---
 def run_orca_job(grid_xyz_lines, calc_id, grid_title, num, grid_index):
     energy, dipole = run_orca_calculation(grid_xyz_lines, calc_id)
