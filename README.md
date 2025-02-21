@@ -54,14 +54,37 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
   - 座標 (X, Y, Z)
 
 ### [ Electronic Data ]
-- **Energy (エネルギー)**: 分子の全エネルギー。
-- **Charge (電荷)**: 分子全体の電荷状態。
-- **Multiplicity (多重度)**: スピン多重度（`2S+1` で表される）。
-- **Gradient (勾配)**: エネルギーの勾配（各座標ごとの変化率）。
-- **Hessian (ヘシアン行列)**: 2階微分行列で、ポテンシャルエネルギー表面の曲率を示す。
-- **Dipole Moment (双極子モーメント)**: 分子の極性を示す指標。
-- **Polarizability (分極率)**: 外部電場による電子雲の変形度合い。
-- **Dipole Derivative (双極子微分係数)**: 振動モードごとの双極子変化を表す。
+- **Energy (エネルギー)**
+- **Charge (電荷)**
+- **Multiplicity (多重度)**
+- **Gradient (勾配)**
+- **Hessian (ヘシアン行列)**
+- **Dipole Moment (双極子モーメント)**
+- **Polarizability (分極率)**
+- **Dipole Derivative (双極子微分係数)**
+
+### [ Vibrational Data ]
+- Normal modes の情報:
+  - **Translational Frequency (並進モードの振動数)**
+  - **Rotational Frequency (回転モードの振動数)**
+  - **Vibrational Frequency (振動モードの振動数)**
+
+#### 振動モードの分類ロジック
+
+振動モードは次の手順で分類される:
+
+1. **全振動モード数**
+   - 直線分子: `3N - 5`
+   - 非直線分子: `3N - 6`
+
+2. **基準振動数の選択**
+   - 計算された振動モードの中から、最も基準振動数の高いものから `3N - 5` (または `3N - 6`) 個を選択。
+
+3. **Rotational および Translational の分類**
+   - 残った正の振動モードのうち、大きいものから順に Rotational Frequency に分類。
+   - さらに残ったものを Translational Frequency に分類。
+
+この方法により、正しいモードの割り当てが行われる(例外もあるため、実行前に要確認)
 
 ### .pot と .dipole の仕様
 
@@ -70,7 +93,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 B3LYP/cc-pVDZ (11)
 # Number of grids and data
     11      1 
-#   q3              Energy
+#   q1              Energy
    -27.68533983     1.4771550955e-01
    -21.00502784     7.7402241929e-02
    -15.28949299     3.8599008997e-02
@@ -90,8 +113,8 @@ B3LYP/cc-pVDZ (11)
    -32.00925814    -28.05499848    -27.68533983     2.3767882545e-02
 ```
 - **座標部分**: `makeGrid.xyz` で生成されたカップリング振動状態の座標を、単体の振動モード座標を用いて重み付けの内積を計算。
-- **エネルギー**: カップリング状態の座標でエネルギーを求め、各振動モード単体のエネルギーを引いたもの。
+- **エネルギー**: カップリング状態の座標でエネルギーを求め、各振動モード単体のエネルギーの合計を引いたもの。
 
-**.dipole** も同様の処理が適用される。
+**.dipole** も双極子モーメントに対して同様の処理が適用される。
 
 
