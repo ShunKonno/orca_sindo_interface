@@ -33,6 +33,8 @@ def main(name, dir):
      dipole_moment, polarizability, gradient, vib_freqs, vib_vectors, trans_freqs, trans_vectors,
      rota_freqs, rota_vectors) = extract_info(name, dir)
     with open(f"../output/{name}.minfo", "w", encoding="UTF-8") as f:
+        f.write("# minfo File version 2:\n")
+        f.write("#\n")
         f.write("[ Atomic Data ]\n")
         f.write(str(atom_num) + "\n")
         for line in xyz_data_full:
