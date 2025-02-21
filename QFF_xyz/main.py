@@ -2,12 +2,18 @@
 import numpy as np
 import os
 import sys
+from orca_run import main
+from grid_xml import main
 
 sys.path.append(os.path.abspath("../orca_sindo_minfo"))
 from my_package.hess import dipole, hessian
 from my_package.out import energy, charge, multiplicity, dipole_moment, polarizability
 from my_package.engrad import engrad
 def main(dir_):
+    
+    orca_run.main()
+    grid_xml.main()
+
     qff_directory = "./mkqff/" + dir_
     input_name = "job"
     with open(f"{qff_directory}/{input_name}.out", "r", encoding="UTF-8") as f:

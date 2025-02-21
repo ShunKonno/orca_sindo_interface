@@ -32,6 +32,7 @@ def main(name, dir):
     (atom_num, xyz_data_full, dipole, hessian, energy, charge, multiplicity, 
      dipole_moment, polarizability, gradient, vib_freqs, vib_vectors, trans_freqs, trans_vectors,
      rota_freqs, rota_vectors) = extract_info(name, dir)
+    os.mkdir("../output/", exist_ok=True)
     with open(f"../output/{name}.minfo", "w", encoding="UTF-8") as f:
         f.write("# minfo File version 2:\n")
         f.write("#\n")

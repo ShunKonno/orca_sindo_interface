@@ -3,6 +3,20 @@
 import os
 import subprocess
 
+def make_orca_input(block_name, coord_lines):
+    charge = 0
+    multiplicity = 1
+    geom_block = "\n".join(coord_lines)
+    orca_input = f"""! B3LYP def2-SVP TightSCF Freq Engrad
+* xyz {charge} {multiplicity}
+{geom_block}
+*
+%elprop
+ Polar 1
+end
+"""
+    return orca_input
+
 def main():
     xyzfile = "../output/makeQFF.xyz"
     orca_cmd = "orca"
@@ -37,22 +51,6 @@ def main():
         subprocess.run(cmd, shell=True, cwd=work_dir)
 
     print("All jobs submitted/finished.")
-
-
-def make_orca_input(block_name, coord_lines):
-    charge = 0
-    multiplicity = 1
-    geom_block = "\n".join(coord_lines)
-    orca_input = f"""! B3LYP def2-SVP TightSCF Freq Engrad
-* xyz {charge} {multiplicity}
-{geom_block}
-*
-%elprop
- Polar 1
-end
-"""
-    return orca_input
-
 
 if __name__ == "__main__":
     main()
