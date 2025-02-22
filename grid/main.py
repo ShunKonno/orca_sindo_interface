@@ -223,7 +223,8 @@ def main():
     eq_xyz_lines = lines[i+2 : i+2+natoms]
     eq_xyz_np = xyz_block_to_np(eq_xyz_lines)
     eq_xyz_for_linecheck = np_to_linecheck_format(eq_xyz_np)
-    is_line = line_check(eq_xyz_for_linecheck)
+    xyz_data = [row[-3:] for row in eq_xyz_for_linecheck]
+    is_line = line_check(xyz_data)
     eq_geometry = eq_xyz_np.flatten().tolist()
     eq_energy, eq_dipole = run_orca_calculation(eq_xyz_lines, "eq")
     print(f"Equilibrium energy: {eq_energy}")
