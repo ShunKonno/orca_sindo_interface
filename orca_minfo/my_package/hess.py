@@ -76,11 +76,14 @@ def vibration(name, xyz_data, atom_num, dir):
     # ---------- ファイル読み込み ----------
     with open(f"{dir}/{name}.hess", "r", encoding="UTF-8") as f:
         data = f.readlines()
-
+    coords = [row[-3:] for row in xyz_data]
+    line_check_flag = line_check(coords)
+    if line_check_flag:
+        print("Linear molecules have been entered!")
     # ---------- 回転自由度の決定 (直線/非直線) ----------
-    rot_num = 2 if line_check(xyz_data) else 3
+    rot_num = 2 if line_check_flag else 3
     # 直線分子なら3N-5、非直線分子なら3N-6が振動モードの数
-    if line_check(xyz_data):
+    if line_check_flag:
         num_vib = 3 * atom_num - 5
     else:
         num_vib = 3 * atom_num - 6
